@@ -15,12 +15,20 @@ def update():
     #Set the download url to what we got from the JSON
     file = f"https://github.com/MapStudioProject/CTR-Studio/releases/download/{name}/CtrStudio-Latest.zip"
     print(f"Updating CTR Studio to {name}...\n")
+    #If files or folders already exists
+    if os.path.exists(parent_dir / "ConfigGlobal.json") or os.path.exists(parent_dir / "Recent.txt") or os.path.exists(parent_dir / "Themes") or os.path.exists(parent_dir / "Presets"):
+        print("ConfigGlobal.json, Recent.txt, Themes and Presets folder are already in the parent folder, remove them before updating CTR Studio\n")
+        sys.exit(1)
     #Copy the settings and recent projects files
-    shutil.copy(ctr_studio_dir / "ConfigGlobal.json", parent_dir / "ConfigGlobal.json")
-    shutil.copy(ctr_studio_dir / "Recent.txt", parent_dir / "Recent.txt")
+    if os.path.exists(ctr_studio_dir / "ConfigGlobal.json"):
+        shutil.copy(ctr_studio_dir / "ConfigGlobal.json", parent_dir / "ConfigGlobal.json")
+    if os.path.exists(ctr_studio_dir / "Recent.txt"):
+        shutil.copy(ctr_studio_dir / "Recent.txt", parent_dir / "Recent.txt")
     #Copy the Themes and Presets folders
-    shutil.copytree(ctr_studio_dir / "Lib/Themes", parent_dir / "Themes")
-    shutil.copytree(ctr_studio_dir / "Lib/Presets", parent_dir / "Presets")
+    if os.path.exists(ctr_studio_dir / "Lib/Themes"):
+        shutil.copytree(ctr_studio_dir / "Lib/Themes", parent_dir / "Themes")
+    if os.path.exists(ctr_studio_dir / "Lib/Presets"):
+        shutil.copytree(ctr_studio_dir / "Lib/Presets", parent_dir / "Presets")
     #Download the file
     os.system(f"curl -L -o ctr.zip {file}")
     #Remove CTR Studio's previous version
@@ -30,14 +38,20 @@ def update():
         zip_ref.extractall(parent_dir)
     os.rename(parent_dir / f"net6.0", ctr_studio_dir)
     #Move the settings and recent projects files back
-    shutil.move(parent_dir / "ConfigGlobal.json", ctr_studio_dir / "ConfigGlobal.json")
-    shutil.move(parent_dir / "Recent.txt", ctr_studio_dir / "Recent.txt")
+    if os.path.exists(parent_dir / "ConfigGlobal.json"):
+        shutil.move(parent_dir / "ConfigGlobal.json", ctr_studio_dir / "ConfigGlobal.json")
+    if os.path.exists(parent_dir / "Recent.txt"):
+        shutil.move(parent_dir / "Recent.txt", ctr_studio_dir / "Recent.txt")
     #Remove the old Themes and Presets folders
-    shutil.rmtree(ctr_studio_dir / "Lib/Themes", ignore_errors=True)
-    shutil.rmtree(ctr_studio_dir / "Lib/Presets", ignore_errors=True)
+    if os.path.exists(ctr_studio_dir / "Lib/Themes"):
+        shutil.rmtree(ctr_studio_dir / "Lib/Themes", ignore_errors=True)
+    if os.path.exists(ctr_studio_dir / "Lib/Presets"):
+        shutil.rmtree(ctr_studio_dir / "Lib/Presets", ignore_errors=True)
     #Move the Themes and Presets folders back
-    shutil.move(parent_dir / "Themes", ctr_studio_dir / "Lib")
-    shutil.move(parent_dir / "Presets", ctr_studio_dir / "Lib")
+    if os.path.exists(parent_dir / "Themes"):
+        shutil.move(parent_dir / "Themes", ctr_studio_dir / "Lib")
+    if os.path.exists(parent_dir / "Presets"):
+        shutil.move(parent_dir / "Presets", ctr_studio_dir / "Lib")
     #Clean up the downloaded zip
     os.remove("ctr.zip")
     print(f"CTR Studio has been updated to {name}!")
