@@ -11,7 +11,7 @@ To set CTR Studio's folder<br>
 Set the folder where `CTR Studio.exe` is inside<br><br>
 To create a shortcut on the desktop or in the start menu to the script's verify function<br>
 `ctrut shortcut desktop/startmenu`<br>
-To update Citra<br>
+To update CTR Studio<br>
 `ctrut update`
 To either launch Citra or update it if it's not up to date<br>
 `ctrut verify`
