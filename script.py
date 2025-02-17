@@ -15,6 +15,9 @@ def update():
     #Set the download url to what we got from the JSON
     file = f"https://github.com/MapStudioProject/CTR-Studio/releases/download/{name}/CtrStudio-Latest.zip"
     print(f"Updating CTR Studio to {name}...\n")
+    #Copy the settings and recent projects files
+    shutil.copy(ctr_studio_dir / "ConfigGlobal.json", parent_dir / "ConfigGlobal.json")
+    shutil.copy(ctr_studio_dir / "Recent.txt", parent_dir / "Recent.txt")
     #Download the file
     os.system(f"curl -L -o ctr.zip {file}")
     #Remove CTR Studio's previous version
@@ -23,6 +26,9 @@ def update():
     with zipfile.ZipFile("ctr.zip", 'r') as zip_ref:
         zip_ref.extractall(parent_dir)
     os.rename(parent_dir / f"net6.0", ctr_studio_dir)
+    #Move the settings and recent projects files back
+    shutil.move(parent_dir / "ConfigGlobal.json", ctr_studio_dir / "ConfigGlobal.json")
+    shutil.move(parent_dir / "Recent.txt", ctr_studio_dir / "Recent.txt")
     #Clean up the downloaded zip
     os.remove("ctr.zip")
     print(f"CTR Studio has been updated to {name}!")
