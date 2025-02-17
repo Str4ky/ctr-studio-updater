@@ -18,6 +18,9 @@ def update():
     #Copy the settings and recent projects files
     shutil.copy(ctr_studio_dir / "ConfigGlobal.json", parent_dir / "ConfigGlobal.json")
     shutil.copy(ctr_studio_dir / "Recent.txt", parent_dir / "Recent.txt")
+    #Copy the Themes and Presets folders
+    shutil.copytree(ctr_studio_dir / "Lib/Themes", parent_dir / "Themes")
+    shutil.copytree(ctr_studio_dir / "Lib/Presets", parent_dir / "Presets")
     #Download the file
     os.system(f"curl -L -o ctr.zip {file}")
     #Remove CTR Studio's previous version
@@ -29,6 +32,12 @@ def update():
     #Move the settings and recent projects files back
     shutil.move(parent_dir / "ConfigGlobal.json", ctr_studio_dir / "ConfigGlobal.json")
     shutil.move(parent_dir / "Recent.txt", ctr_studio_dir / "Recent.txt")
+    #Remove the old Themes and Presets folders
+    shutil.rmtree(ctr_studio_dir / "Lib/Themes", ignore_errors=True)
+    shutil.rmtree(ctr_studio_dir / "Lib/Presets", ignore_errors=True)
+    #Move the Themes and Presets folders back
+    shutil.move(parent_dir / "Themes", ctr_studio_dir / "Lib")
+    shutil.move(parent_dir / "Presets", ctr_studio_dir / "Lib")
     #Clean up the downloaded zip
     os.remove("ctr.zip")
     print(f"CTR Studio has been updated to {name}!")
