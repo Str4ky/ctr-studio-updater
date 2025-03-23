@@ -211,13 +211,19 @@ elif argument == "verify":
                 print("CTR Studio folder is not set")
                 print("\nUse: ctrut set <ctr_studio_folder>")
                 sys.exit(1)
-        elif "version" in data:
-            print("CTR Studio version is not set")
-            print("\nUse: ctrut update")
-            sys.exit
         else:
-            print("CTR Studio folder is not set or version not found")
-            print("\nUse: ctrut set <ctr_studio_folder> then ctrut update")
+            print("CTR Studio folder is not set")
+            print("\nUse: ctrut set <ctr_studio_folder>")
+            sys.exit(1)
+
+        if "version" in data:
+            if  data["version"] == "":
+                print("CTR Studio version is not set")
+                print("\nUse: ctrut update")
+                sys.exit(1)
+        else:
+            print("CTR Studio version not found")
+            print("\nUse: ctrut update")
             sys.exit(1)
         ctr_studio_dir = Path(data["path"])
         parent_dir = Path(ctr_studio_dir).parent
