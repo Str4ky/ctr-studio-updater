@@ -118,45 +118,47 @@ elif argument == "shortcut":
                 data = json.load(json_file)
                 if "path" in data:
                     if  data["path"] == "":
-                        print("CTR Studio folder is not set not set")
+                        print("CTR Studio folder is not set")
                         print("\nUse: cput set <ctr_studio_folder>")
                         sys.exit(1)
                     elif data["path"] != "":
                         #Create the icon
-                        exe_path = data["path"] + "/CTR Studio.exe"
-                        size=(256, 256)
-
-                        large, small = win32gui.ExtractIconEx(exe_path, 0)
-                        icon_handle = large[0] if large else small[0]
-
-                        hdc = win32ui.CreateDCFromHandle(win32gui.GetDC(0))
-                        hbmp = win32ui.CreateBitmap()
-                        hbmp.CreateCompatibleBitmap(hdc, size[0], size[1])
-
-                        hdc_mem = hdc.CreateCompatibleDC()
-                        hdc_mem.SelectObject(hbmp)
-                        win32gui.DrawIconEx(hdc_mem.GetSafeHdc(), 0, 0, icon_handle, size[0], size[1], 0, None, win32con.DI_NORMAL)
-
-                        bmpinfo = hbmp.GetInfo()
-                        bmpstr = hbmp.GetBitmapBits(True)
-                        img = Image.frombuffer(
-                            'RGBA',
-                            (bmpinfo['bmWidth'], bmpinfo['bmHeight']),
-                            bmpstr, 'raw', 'BGRA', 0, 1
-                        )
-
-                        img.save(user_dir + "/ctr.png")
-
-                        image = Image.open(user_dir + "/ctr.png")
-                        image = image.convert('RGBA')
-                        image.save(user_dir + "/ctr.ico", format='ICO', sizes=[(64, 64), (128, 128), (256, 256)])
                         icon_path = user_dir + "/ctr.ico"
+                        #Check if file already exists
+                        if not Path(icon_path).exists():
+                            exe_path = data["path"] + "/CTR Studio.exe"
+                            size=(256, 256)
+
+                            large, small = win32gui.ExtractIconEx(exe_path, 0)
+                            icon_handle = large[0] if large else small[0]
+
+                            hdc = win32ui.CreateDCFromHandle(win32gui.GetDC(0))
+                            hbmp = win32ui.CreateBitmap()
+                            hbmp.CreateCompatibleBitmap(hdc, size[0], size[1])
+
+                            hdc_mem = hdc.CreateCompatibleDC()
+                            hdc_mem.SelectObject(hbmp)
+                            win32gui.DrawIconEx(hdc_mem.GetSafeHdc(), 0, 0, icon_handle, size[0], size[1], 0, None, win32con.DI_NORMAL)
+
+                            bmpinfo = hbmp.GetInfo()
+                            bmpstr = hbmp.GetBitmapBits(True)
+                            img = Image.frombuffer(
+                                'RGBA',
+                                (bmpinfo['bmWidth'], bmpinfo['bmHeight']),
+                                bmpstr, 'raw', 'BGRA', 0, 1
+                            )
+
+                            img.save(user_dir + "/ctr.png")
+
+                            image = Image.open(user_dir + "/ctr.png")
+                            image = image.convert('RGBA')
+                            image.save(user_dir + "/ctr.ico", format='ICO', sizes=[(64, 64), (128, 128), (256, 256)])
                         #Create the shortcut
                         os.system(f"powershell.exe -Command \"$s=(New-Object -COM WScript.Shell).CreateShortcut('{shortcut_path}');$s.TargetPath='{exe_file}';$s.Arguments='verify';$s.IconLocation='{icon_path}';$s.Save()\"")
                         print("Shortcut has been created")
                         sys.exit(0)
                 else:
-                    print("CTR Studio folder is not set not set")
+                    print("CTR Studio folder is not set")
                     print("\nUse: ctrut set <ctr_studio_folder>")
                     sys.exit(1)
                 json_file.close()
@@ -172,11 +174,11 @@ elif argument == "update":
         #If the path value is empty
         if "path" in data:
             if  data["path"] == "":
-                print("CTR Studio folder is not set not set")
+                print("CTR Studio folder is not set")
                 print("\nUse: ctrut set <ctr_studio_folder>")
                 sys.exit(1)
         else:
-            print("CTR Studio folder is not set not set")
+            print("CTR Studio folder is not set")
             print("\nUse: ctrut set <ctr_studio_folder>")
             sys.exit(1)
         #Get CTR Studio's folder and it's parent
@@ -206,12 +208,16 @@ elif argument == "verify":
         #If the path value is empty
         if "path" in data:
             if  data["path"] == "":
-                print("CTR Studio folder is not set not set")
+                print("CTR Studio folder is not set")
                 print("\nUse: ctrut set <ctr_studio_folder>")
                 sys.exit(1)
+        elif "version" in data:
+            print("CTR Studio version is not set")
+            print("\nUse: ctrut update")
+            sys.exit
         else:
-            print("CTR Studio folder is not set not set")
-            print("\nUse: ctrut set <ctr_studio_folder>")
+            print("CTR Studio folder is not set or version not found")
+            print("\nUse: ctrut set <ctr_studio_folder> then ctrut update")
             sys.exit(1)
         ctr_studio_dir = Path(data["path"])
         parent_dir = Path(ctr_studio_dir).parent
